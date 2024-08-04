@@ -25,7 +25,7 @@ def generate_random_hash(numb: int = 1) -> str:
 
 
 def check_elastic_search_connection():
-    elastic_search = Elasticsearch(f'{db_config["DOMAIN"]}', basic_auth=('elastic', db_config['PASS']))
+    elastic_search = Elasticsearch(f'http://{db_config["DOMAIN"]}:9200', basic_auth=('elastic', db_config['PASS']))
     elastic_ping = elastic_search.ping()
     if elastic_ping:
         logging.info(f"Successfully connected to ElasticSearch: {elastic_ping}")
@@ -37,7 +37,7 @@ def check_elastic_search_connection():
 
 def elastic_search_write_hash(size: int = 100) -> bool:
     if check_elastic_search_connection():
-        es = Elasticsearch(f'{db_config["DOMAIN"]}', basic_auth=('elastic', db_config['PASS']))
+        es = Elasticsearch(f'http://{db_config["DOMAIN"]}:9200', basic_auth=('elastic', db_config['PASS']))
         for _ in range(size):
             es.index(index='hashes', body={'hash': generate_random_hash(db_config['HASH_SIZE'])})
         return True
@@ -49,4 +49,3 @@ if __name__ == '__main__':
         logging.info("Hashes successfully written to the database.")
     else:
         logging.error("Failed to write hashes to the database.")
-
