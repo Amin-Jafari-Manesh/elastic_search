@@ -2,6 +2,8 @@ import logging
 from elasticsearch import Elasticsearch
 from os import environ
 
+logging.basicConfig(level=logging.INFO)
+
 db_config = {
     'PASS': environ.get('PASS', ''),
     'DOMAIN': environ.get('DOMAIN', ''),
@@ -41,5 +43,10 @@ def elastic_search_write_hash(size: int = 100) -> bool:
         return True
     return False
 
+
 if __name__ == '__main__':
-    elastic_search_write_hash(db_config['RECORDS'])
+    if elastic_search_write_hash(db_config['RECORDS']):
+        logging.info("Hashes successfully written to the database.")
+    else:
+        logging.error("Failed to write hashes to the database.")
+
